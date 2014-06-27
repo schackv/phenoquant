@@ -8,19 +8,18 @@ Created on Thu Jun 26 14:51:44 2014
 from .scalespace import scale, gradient_orientation, shape_index
 from scipy.special import jn
 from scipy.ndimage.filters import gaussian_filter
+from skimage import filter
 import numpy as np
+from . import imtools
 
 """ Extract features according to the supplied options"""
 def extract(im, mask, opts):
-
-    
-    
     
     f = []
     
     # Extract black/white ratio proportions
     if 'bwratio' in opts:
-        bw = bwratio(im,opts['bwratio'])
+        bw = segment_stripes(im,opts['bwratio'])
         f.append( spatial_pooling(bw, mask, opts['interest_points']) )
         
     # Gradient orientation histograms
@@ -44,8 +43,18 @@ def spatial_pooling(images,mask,opts):
         print(radius)
     
 
-def bwratio(im,opts):
-    pass
+"""Segment image into black and colored regions (stripe-or-not)"""
+def segment_stripes(imrgb,mask):
+    
+    mask = mask & ~imtools.detect_glare(imrgb)
+    im = imtools.rgb_to_gray(imrgb)
+    # Do thresholding in grayscale image
+    im = imtools.linear_scaling(im,oldmin=np.mean(im[mask])-3*np.std(im[mask]),oldmax=np.mean(im[mask])+3*np.std(im[mask]))
+    tau = filter.threshold_otsu(im)
+    stripes = (im>tau) & mask
+    
+    return stripes, mask
+    
 
 
 

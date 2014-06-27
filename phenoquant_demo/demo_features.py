@@ -17,7 +17,8 @@ def demo_features():
     # Load image and mask
     im = scipy.misc.imread('warpedImage.png')
     mask = scipy.misc.imread('mask.png')>0
-        
+    im_gray = imtools.standardize(imtools.rgb_to_gray(im),mask=mask)
+    
     # Define the features to be extracted
     feature_opts = {'interest_points': {
                         'xy': [[]],
@@ -38,11 +39,17 @@ def demo_features():
 #    print(features)
     
     # Show examples of features
-    im_gray = imtools.rgb_to_gray(im)
-    im_gray = imtools.standardize(im_gray,mask=mask)
-#    F_bwratio = pq.features.bwratio(im,feature_opts['bwratio'])
+    stripesbw, glaremask = features.segment_stripes(im,mask)
     F_gradient, labels_gradient = features.gradient_histograms(im_gray,**feature_opts['gradient_histograms'])
     F_shape, labels_shape = features.shape_histograms(im_gray,**feature_opts['shape_histograms'])
+    
+    # Stripe segmentation
+    fig,axs = plt.subplots(3,1)
+    for ax, title, img in zip(axs,('Original image','Stripe segmentation','Glare mask'),(im,stripesbw,glaremask)):
+        ax.imshow(img)
+        ax.set_title(title)
+        ax.axis('image')
+    
     
     # Gradient orientations
     fig, axs = plt.subplots(2,4)
