@@ -50,7 +50,6 @@ def demo_features():
         ax.set_title(title)
         ax.axis('image')
     
-    
     # Gradient orientations
     fig, axs = plt.subplots(2,4)
     for ax, F, label in zip(axs.flat,F_gradient.T,labels_gradient):
