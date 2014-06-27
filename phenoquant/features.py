@@ -57,7 +57,6 @@ nbins bins. The smoothing over this range is controlled by the tonal scale.
 The aperture scale controls the spatial smoothing in each bin.
 """
 def gradient_histograms(im,nbins,sigmas,tonal_scale=1.0,aperture_scale=1.0):    
-
     tonal_scale *= np.ones_like(sigmas)
     aperture_scale *= np.ones_like(sigmas)
     
@@ -75,6 +74,28 @@ def gradient_histograms(im,nbins,sigmas,tonal_scale=1.0,aperture_scale=1.0):
     hists = np.dstack(hists)
     return hists, labels
     
-
-def shape_histograms(im, opts):
-    raise NotImplemented()
+"""Shape index histograms"""
+def shape_histograms(im, nbins, sigmas, tonal_scale=1.0, aperture_scale=1.0):
+    tonal_scale *= np.ones_like(sigmas)
+    aperture_scale *= np.ones_like(sigmas)
+    
+    bin_centers = 1/nbins + np.linspace(-1,1,num=nbins,endpoint=False)
+    
+    xx = np.linspace(-1,1,num=100)
+    dxx = xx[2]-xx[1]
+    
+    hists =[]
+    labels = []
+    for idx, s in enumerate(sigmas):
+        si, si_c = shape_index(im, s)   # Shape index at scale s
+        for b in bin_centers:
+            z = np.sum( np.exp( - (xx - b)**2/(2*tonal_scale[idx]**2) )*dxx)
+            si_R = si_c/z * np.exp( -(si - b)**2 / (2*tonal_scale[idx]**2) )
+            h = gaussian_filter(si_R, aperture_scale[idx])
+            hists.append(h)
+            labels.append('sigma={:.2f}, b={:.2f}'.format(s,b))
+    hists = np.dstack(hists)
+    return hists,labels
+    
+    
+    
