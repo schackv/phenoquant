@@ -36,6 +36,18 @@ def linear_scaling(X,oldmin=-np.inf,oldmax=np.inf):
 
 
 
+""" 
+Create a true/false mask with pixels closer than 'radius' to 'center' being True
+and everything else False. The output array is of size 'shape'.
+"""
+def circular_mask(shape, center, radius):
+    mask = np.ones(shape, dtype=bool)
+    xx, yy = np.meshgrid(range(shape[1]),range(shape[0]))
+    D = np.sqrt( (xx-center[0])**2 + (yy-center[1])**2)
+    mask[D>radius]=False
+    return mask
+
+
 
 """
 Detect pixels in the image where all channels have values above 0.95.

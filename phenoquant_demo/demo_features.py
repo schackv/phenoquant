@@ -19,10 +19,17 @@ def demo_features():
     mask = scipy.misc.imread('mask.png')>0
     im_gray = imtools.standardize(imtools.rgb_to_gray(im),mask=mask)
     
+#     #Select points:
+#    plt.imshow(im)
+#    xy = plt.ginput(4)
+#    plt.show()
+#    print(xy)
+#    return
+    
     # Define the features to be extracted
     feature_opts = {'interest_points': {
-                        'xy': [[]],
-                        'radii': [50, 50, 100, 100]},
+                        'xy': [(75.875, 76.625), (202.625, 299.25), (365.125, 144.875), (630.0, 154.625)],
+                        'radii': [75, 75, 150, 150]},
                     'bwratio': True,
                     'gradient_histograms': {
                         'nbins': 4,
@@ -35,8 +42,8 @@ def demo_features():
     
     
     # Extract all features
-#    features = pq.features.extract(im,mask,feature_opts)
-#    print(features)
+    F, labels = features.extract(im,mask,feature_opts)
+    print('\n'.join('{}:\t {:.5f}'.format(*k) for k in zip(labels,F)))
     
     # Show examples of features
     stripesbw, glaremask = features.segment_stripes(im,mask)
@@ -49,6 +56,11 @@ def demo_features():
         ax.imshow(img)
         ax.set_title(title)
         ax.axis('image')
+    
+    # Plot interest points circles to illustrate positions
+    for xy, radius in  zip(feature_opts['interest_points']['xy'], feature_opts['interest_points']['radii']):
+        circle = plt.Circle(xy,radius,color='r',fill=False)
+        axs[0].add_artist(circle)
     
     # Gradient orientations
     fig, axs = plt.subplots(2,4)

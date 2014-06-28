@@ -16,31 +16,61 @@ from . import imtools
 def extract(im, mask, opts):
     
     f = []
+    labels = []
+    im_gray = imtools.standardize(imtools.rgb_to_gray(im),mask=mask)    
     
     # Extract black/white ratio proportions
     if 'bwratio' in opts:
-        bw = segment_stripes(im,opts['bwratio'])
-        f.append( spatial_pooling(bw, mask, opts['interest_points']) )
+        bw, glaremask = segment_stripes(im,mask)
+        val, labels_ = spatial_pooling(bw, glaremask, labels_in=('bw',), **opts['interest_points'])
+        f.append(val)
+        labels.extend(labels_)
         
     # Gradient orientation histograms
     if 'gradient_histograms' in opts:
-        goh = gradient_histograms(im,opts['gradient_histograms'])
-        f.append( spatial_pooling(goh ,mask, opts['interest_points']) )
+        goh, labels_ = gradient_histograms(im_gray,**opts['gradient_histograms'])
+        val, labels_ = spatial_pooling(goh, mask,labels_in=labels_, **opts['interest_points'])
+        f.append(val)
+        labels.extend(labels_)
         
     # Shape index histograms
     if 'shape_histograms' in opts:
-        sih = shape_histograms(im, opts['shape_histograms'])
-        f.append( spatial_pooling(sih, mask, opts['interest_points']))
+        sih, labels_ = shape_histograms(im_gray,**opts['shape_histograms'])
+        val, labels_ = spatial_pooling(sih, mask,labels_in=labels_, **opts['interest_points'])
+        f.append(val)
+        labels.extend(labels_)
+
         
-    return f
+    return np.hstack(f), labels
     
     
-""" Do a spatial average for each interest point over each image"""
-def spatial_pooling(images,mask,opts):
+""" Do a spatial average for each interest point over each layer"""
+def spatial_pooling(images,mask,xy,radii,labels_in=[]):
+
+    imshp = images.shape
+    m, n = imshp[0:2]
+    if len(imshp)>2:
+        p = imshp[2]
+    else:
+        images = images[:,:,np.newaxis]
+        p = 1
+        
+    if not labels_in:
+        labels_in = ['f{}'.format(i) for i in range(p)]
+    
     f = []
-    for xy, radius in enumerate(opts['xy'],opts['radii']):
-        print(xy)
-        print(radius)
+    labels = []
+    for c, (xy, radius) in enumerate(zip(xy,radii)):
+        circ_mask = imtools.circular_mask((m,n),xy,radius)  # Create mask around interest point
+        for i in range(p):
+            im = images[:,:,i]
+            val = np.mean(im[circ_mask & mask])     # Average over region
+            f.append(val)
+            labels.append('c{}, {}'.format(c,labels_in[i]))
+    f = np.hstack(f)
+    return f, labels
+            
+            
     
 
 """Segment image into black and colored regions (stripe-or-not)"""
