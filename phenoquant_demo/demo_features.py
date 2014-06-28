@@ -18,6 +18,7 @@ def demo_features():
     mask = scipy.misc.imread('mask.png')>0
     im_gray = imtools.standardize(imtools.rgb_to_gray(im),mask=mask)
     
+    # Feature extraction
     ## Define the features to be extracted
     feature_opts = {'interest_points': {
                         'xy': [(75.875, 76.625), (202.625, 299.25), (365.125, 144.875), (630.0, 154.625)],
@@ -29,15 +30,13 @@ def demo_features():
                     'shape_histograms':{
                         'nbins': 5,
                         'sigmas': [2, 8]}
-                    }
-
+                    }   
     
-    
-    # Extract all features
+    ## Extract all features
     F, labels = features.extract(im,mask,feature_opts)
-    print('\n'.join('{}:\t {:.5f}'.format(*k) for k in zip(labels,F)))
+    print('\n'.join('{}:\t {:.5f}'.format(*k) for k in zip(labels,F)))  # Print out features
     
-    # Show examples of features
+    # Show examples of feature images
     stripesbw, glaremask = features.segment_stripes(im,mask)
     F_gradient, labels_gradient = features.gradient_histograms(im_gray,**feature_opts['gradient_histograms'])
     F_shape, labels_shape = features.shape_histograms(im_gray,**feature_opts['shape_histograms'])
