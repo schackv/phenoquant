@@ -1,8 +1,8 @@
 import numpy as np
 from numpy import pi, exp
 
-"""ScaleSpace class by Anders B. L. Larsen @ https://github.com/andersbll/ipcv"""
 class ScaleSpace:
+    """ScaleSpace class by Anders B. L. Larsen @ https://github.com/andersbll/ipcv"""
     def __init__(self, img_shape, sigmas, dys, dxs):
         ''' Compute the scale-space of an image.
         Upon initialization, this class precomputes the Gaussian windows used

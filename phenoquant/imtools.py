@@ -12,7 +12,6 @@ def rgb_to_gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.144])
     
 
-
 def standardize(X,mask=[]):
     if not mask.size:
         mask = np.ones_like(X)==1
@@ -20,11 +19,10 @@ def standardize(X,mask=[]):
     return (X-np.mean(X[mask]))/np.std(X[mask])
     
     
-"""
-Scale the contents of X linearly such that oldmin equals zero and oldmax equals one.
-Values below oldmin and above oldmax are set equal to 0 and 1 respectively
-"""
 def linear_scaling(X,oldmin=-np.inf,oldmax=np.inf):
+    """Scale the contents of X linearly such that oldmin equals zero and oldmax equals one.
+    Values below oldmin and above oldmax are set equal to 0 and 1 respectively
+    """
     if oldmin==-np.inf:
         oldmin = np.min(X)
     if oldmax == np.inf:
@@ -36,11 +34,10 @@ def linear_scaling(X,oldmin=-np.inf,oldmax=np.inf):
 
 
 
-""" 
-Create a true/false mask with pixels closer than 'radius' to 'center' being True
-and everything else False. The output array is of size 'shape'.
-"""
 def circular_mask(shape, center, radius):
+    """Create a true/false mask with pixels closer than 'radius' to 'center' being True
+    and everything else False. The output array is of size 'shape'.
+    """
     mask = np.ones(shape, dtype=bool)
     xx, yy = np.meshgrid(range(shape[1]),range(shape[0]))
     D = np.sqrt( (xx-center[0])**2 + (yy-center[1])**2)
@@ -49,19 +46,18 @@ def circular_mask(shape, center, radius):
 
 
 
-"""
-Detect pixels in the image where all channels have values above 0.95.
-These pixels are dilated with a disk with radius 5
-"""
 def detect_glare(im):
+    """Detect pixels in the image where all channels have values above 0.95.
+    These pixels are dilated with a disk with radius 5
+    """
     saturated_pixels = np.all(im>0.95*np.iinfo(im.dtype).max,axis=2)
     
     glare_mask = morph.binary_dilation(saturated_pixels, morph.disk(5)).astype('bool')
     return glare_mask
     
 
-"""Do a morphological opening followed by a closing"""    
 def open_and_close(bw,openradius=10,closeradius=3):
+    """Do a morphological opening followed by a closing"""
     bw = morph.binary_opening(bw,morph.disk(openradius))
     bw = morph.binary_closing(bw,morph.disk(3)).astype('bool')
     return bw

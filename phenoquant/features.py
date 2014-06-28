@@ -12,8 +12,8 @@ from skimage import filter
 import numpy as np
 from . import imtools
 
-""" Extract features according to the supplied options"""
 def extract(im, mask, opts):
+    """ Extract features according to the supplied options"""
     
     f = []
     labels = []
@@ -44,8 +44,8 @@ def extract(im, mask, opts):
     return np.hstack(f), labels
     
     
-""" Do a spatial average for each interest point over each layer"""
 def spatial_pooling(images,mask,xy,radii,labels_in=[]):
+    """Do a spatial average for each interest point over each layer"""
 
     imshp = images.shape
     m, n = imshp[0:2]
@@ -73,8 +73,8 @@ def spatial_pooling(images,mask,xy,radii,labels_in=[]):
             
     
 
-"""Segment image into black and colored regions (stripe-or-not)"""
 def segment_stripes(imrgb,mask):
+    """Segment image into black and colored regions (stripe-or-not)"""
     
     mask = mask & ~imtools.detect_glare(imrgb)
     im = imtools.rgb_to_gray(imrgb)
@@ -88,14 +88,14 @@ def segment_stripes(imrgb,mask):
 
 
 
-"""
-Gradient orientation histograms in a scale space formulation.
-The scales in the array sigmas controls the spatial scale space.
-The gradient orientations live in the range [0,2pi] and this range is binned in 
-nbins bins. The smoothing over this range is controlled by the tonal scale.
-The aperture scale controls the spatial smoothing in each bin.
-"""
-def gradient_histograms(im,nbins,sigmas,tonal_scale=1.0,aperture_scale=1.0):    
+def gradient_histograms(im,nbins,sigmas,tonal_scale=1.0,aperture_scale=1.0):
+    """
+    Gradient orientation histograms in a scale space formulation.
+    The scales in the array sigmas controls the spatial scale space.
+    The gradient orientations live in the range [0,2pi] and this range is binned in 
+    nbins bins. The smoothing over this range is controlled by the tonal scale.
+    The aperture scale controls the spatial smoothing in each bin.
+    """
     tonal_scale *= np.ones_like(sigmas)
     aperture_scale *= np.ones_like(sigmas)
     
@@ -113,8 +113,8 @@ def gradient_histograms(im,nbins,sigmas,tonal_scale=1.0,aperture_scale=1.0):
     hists = np.dstack(hists)
     return hists, labels
     
-"""Shape index histograms"""
 def shape_histograms(im, nbins, sigmas, tonal_scale=1.0, aperture_scale=1.0):
+    """Shape index histograms"""
     tonal_scale *= np.ones_like(sigmas)
     aperture_scale *= np.ones_like(sigmas)
     
