@@ -5,8 +5,8 @@ Redistribution and use in source and binary forms, with or without modification,
 1. The use of derivative works is restricted in the following way in accordance with standard academic citation practices:
 Any academic report, publication, or other academic disclosure of results obtained with the use of this software will acknowledge the software's use by an appropiate citation of one or more of the following publications (or updated versions):
 
-*J. S. Vestergaard, E. Twomey, R. Larsen, K. Summers and R. Nielsen. Number of genes controlling a quantitative trait in a hybrid zone  of the aposematic frog Ranitomeya imitator, in review with *Proceedings of the Royal Society. Series  B. Biological Sciences*, 2014. 
-*A. B. L. Larsen, J. S. Vestergaard and R. Larsen. HEp-2 cell classification using shape index histograms with donut-shaped spatial pooling, [in press] *IEEE Transactions on Medical Imaging*, 2014. doi:10.1109/TMI.2014.2318434
+*J. S. Vestergaard, E. Twomey, R. Larsen, K. Summers and R. Nielsen. Number of genes controlling a quantitative trait in a hybrid zone  of the aposematic frog Ranitomeya imitator, in review with _Proceedings of the Royal Society. Series  B. Biological Sciences_, 2014. 
+*A. B. L. Larsen, J. S. Vestergaard and R. Larsen. HEp-2 cell classification using shape index histograms with donut-shaped spatial pooling, [in press] _IEEE Transactions on Medical Imaging_, 2014. doi:10.1109/TMI.2014.2318434
 
 2. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
