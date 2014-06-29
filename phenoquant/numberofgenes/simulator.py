@@ -2,7 +2,9 @@
 """
 Created on Tue Feb 18 21:37:04 2014
 
-@author: jsve
+Adds command line support for the number-of-genes simulations.
+
+@author: schackv
 """
 
 import numpy as np
@@ -67,9 +69,9 @@ if __name__ == '__main__':
     print("Simulator called with K={} and fsigma={}".format(args.K,args.fsigma))        
 
     results = run_simulations(args.K, args.N, np.linspace(args.minsigma,args.maxsigma,args.numsigma), args.fsigma, args.B, args.kmax)
-    args.outputfile = 'test.pic'
+    
     if (args.outputfile is not None):
-            # Save results to outputdir
+        # Save results to a file
         with open(args.outputfile,'wb') as f:
             pickle.dump([args, results], f)
 

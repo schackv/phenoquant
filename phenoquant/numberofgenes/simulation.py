@@ -14,7 +14,7 @@ class PhenotypeSimulator:
         """Initialize the phenotype simulator with K genes"""
         self.K = K    
     
-    def simulateData(self,N, sigma_e, sigma_f, B, seed=None):
+    def simulateData(self,N, sigma_e, sigma_f, B=1, seed=None):
         """Simulate N phenotype observations with sigma_e being the st.d. on the
         environmental variance, sigma_f the estimation noise on the admixture proportions
         and B the number of samples of each admixture proportion.

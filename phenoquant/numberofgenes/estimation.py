@@ -3,33 +3,39 @@ from __future__ import division
 import numpy as np
 import scipy.stats as stats
 import itertools
-import simulation as ps
-import matplotlib.pyplot as p
+from . import simulation as ps
 from scipy.optimize import minimize
-from math import sqrt, exp, pi, isnan
+from math import sqrt, pi
 
 #from joblib import Parallel, delayed
 
 class GeneEstimator:
     
     data = [];
+       
     
     def estimate(self,f,z,kmax):
         """Estimate the maximum likelihood for 1:kmax genes given the admixture
         proportions in f and the phenotypic quantities in z.
+        
+        Returns maximum log-likelihood and parameters for each K <= kmax
         """
-        results = []
+        maxll = []
+        params = []
         for k in range(1,kmax+1):
-            res = self.profile_likelihood(f,z,k)
-            minfval = min([R.fun for R in res])
-            print("   K = {}, fval = {}".format(k,minfval))
-            results.append(res)
+            ll_k, x_k = self.profile_likelihood(f,z,k)
+            print("   K = {}, fval = {}".format(k,ll_k))
+            maxll.append(ll_k)
+            params.append(x_k)
             
-        return results
+        return maxll, params
 
     def profile_likelihood(self,f,z,K):
         """Maximize and return the log-likelihood under the hypothesis of K genes
         given the admixture proportions in f and the phenotypic quantities in z.
+        
+        Returns log-likelihood (not negative log-likelihood!) and parameter estimates as
+            loglikelihood, params = profile_likelihood(...)
         """
         
         self.X0 = starting_points(z)
@@ -42,7 +48,13 @@ class GeneEstimator:
             res = minimize(minllnumgenes,x0,method='nelder-mead', args=(K,z,f,p_G), options = {'disp': False})
             res.update({'x0': x0})
             R.append(res)
-        return R
+        
+        # Find minimum negative log-likelihood
+        min_idx = np.argmin([r.fun for r in R])
+        negll = R[min_idx].fun
+        params = R[min_idx].x
+        
+        return -negll, params
 
 def starting_points(z):
     """Generate starting points based on the data percentiles"""
