@@ -29,13 +29,14 @@ def demo_numberofgenes():
     plt.show(block=False)
     
     # Estimate maximum likelihood for K=1:3 and show likelihood ratios
-    repeats = 10
+    repeats = 5
+    kmax = 3
     maxll = []
     params = []
     GE = GeneEstimator()
     for r in range(repeats):
         PS.simulateData(N=1000,sigma_e=0.2,sigma_f=0)
-        maxll_, params_ = GE.estimate(PS.f,PS.z,kmax=3)
+        maxll_, params_ = GE.estimate(PS.f,PS.z,kmax=kmax)
         maxll.append(maxll_)
         params.append(np.vstack(params_))
     maxll = np.vstack(maxll)
@@ -44,9 +45,10 @@ def demo_numberofgenes():
     ## Make boxplots
     fig, axs = plt.subplots(1,2)
     plt.sca(axs[0])
-    plt.boxplot(maxll[:,1:]-maxll[:,0])
+    plt.boxplot(maxll[:,1:]-maxll[:,0,np.newaxis])
+    plt.xticks(np.arange(1,kmax),np.arange(2,kmax+1))
     plt.xlabel('k')
-    plt.ylabel('ll(K=k/K=1))
+    plt.ylabel('ll(K=k/K=1)')
     
     plt.show()
         
