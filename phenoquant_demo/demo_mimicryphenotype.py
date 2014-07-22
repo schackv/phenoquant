@@ -37,11 +37,7 @@ def demo_mimicryphenotype():
     z, w = manifolds.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
     
     # Plot variation of phenotype per locality
-    unique_locations = set(locations)
-    phenotypes = []
-    for loc in unique_locations:
-        idx = np.array([l==loc for l in locations])
-        phenotypes.append(z[idx])
+    unique_locations, phenotypes = groupvalues(z, locations)
     
     plt.figure()
     plt.boxplot(phenotypes)
@@ -60,6 +56,18 @@ def demo_mimicryphenotype():
     plt.title('Variable correlation with mimicry phenotype')
     plt.show(block=True)
         
-
+        
+def groupvalues(x, grp):
+    """Group the values of x by the values in grp. 
+    Returns the unique values from grp and a list of the same length with arrays.
+    """
+    unq_grp = set(grp)
+    values = []
+    for loc in unq_grp:
+        idx = np.array([l==loc for l in grp])
+        values.append(x[idx])
+    
+    return unq_grp, values
+    
 if __name__=='__main__':
     demo_mimicryphenotype()
