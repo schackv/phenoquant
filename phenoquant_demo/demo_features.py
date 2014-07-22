@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import phenoquant.features as features
 import phenoquant.imtools as imtools
 
-"""Use a single image as an example of feature extraction"""
 def demo_features():
+    """Use a single image as an example of feature extraction"""
     
     ## Load image and mask
     im = scipy.misc.imread('warpedImage.png')
