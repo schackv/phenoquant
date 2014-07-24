@@ -19,6 +19,8 @@ def demo_mimicryphenotype():
     It does not illustrate how to do parameter selection in a meaningful way.
     """
     
+    manifold = 'kda'    
+    
     # Read data
     raw = np.genfromtxt('phenotypes.csv',delimiter=';',dtype=None)
     ids = [int(x) for x in raw[1:,0]]
@@ -31,10 +33,15 @@ def demo_mimicryphenotype():
     is_model1 = [s == 'Ranitomeya summersi' for s in locations]
     is_model2 = [s == 'Ranitomeya variabilis' for s in locations]
     
-    # Reduce to one dimension using linear discriminant analysis
-    y = np.array(is_model1,dtype=int) + 2*np.array(is_model2,dtype=int)
-    X = (data-data.mean(axis=0))/data.std(axis=0,ddof=1)
-    z, w = manifolds.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
+    y = np.array(is_model1,dtype=int) + 2*np.array(is_model2,dtype=int) # Class vector
+    X = (data-data.mean(axis=0))/data.std(axis=0,ddof=1)        # Standardize data column wise
+    
+    if manifold=='lda':
+        # Reduce to one dimension using linear discriminant analysis    
+        z, w = manifolds.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
+    elif manifold =='kda':
+        # Reduce to one dimension using kernel discriminant analysis
+        z, w = manifolds.fisherkda(X,y,kernel='Gaussian',scale=None,alpha=0.5)   # Arbitrary reg. param. choice. scale=None defaults to rule-of-thumb scale choices
     
     # Plot variation of phenotype per locality
     unique_locations, phenotypes = groupvalues(z, locations)
@@ -43,7 +50,7 @@ def demo_mimicryphenotype():
     plt.boxplot(phenotypes)
     plt.gcf().subplots_adjust(bottom=0.5)
     plt.xticks(range(1,len(unique_locations)+1),list(unique_locations),rotation=90)
-    plt.show(block=False)    
+    plt.show(block=False)
     
     # Show variables correlation with found direction
     C = np.corrcoef( np.hstack((data,z)).T)[:-1,-1]
