@@ -81,7 +81,7 @@ def kernelize(Xtrain,Xtest,kernel='Gaussian',scale=None):
     else:
         raise NameError(kernel)
     
-    return K
+    return K, scale
     
         
     

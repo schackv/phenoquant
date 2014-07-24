@@ -85,8 +85,9 @@ def fisherkda(X,y,kernel='Gaussian',scale=None,alpha=0,regtype='identity',stretc
     
     # Kernelize all with training data
     idx = y > 0     # All training ids
-    Ktest = knl.kernelize(X[idx,:],X,kernel,scale)
-    Ktrain = Ktest[:,idx]   # Training kernel matrix
+    Xtrain = X[idx,:]
+    Ktrain, scale_train = knl.kernelize(Xtrain,Xtrain,kernel,scale)
+    Ktest, _ = knl.kernelize(Xtrain,X,kernel,scale_train)
 
     # Center kernels with training data    
     K = knl.center(Ktrain)
