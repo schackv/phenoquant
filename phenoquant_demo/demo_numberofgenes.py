@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun 26 13:12:05 2014
+Demonstrates the use of the phenoquant.numberofgenes subpackage
 
-Demonstrates the use of the numberofgenes subpackage
+Created on Thu Jun 26 13:12:05 2014
 
 @author: schackv
 """

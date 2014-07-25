@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+Demo for phenoquant.features.py
+
 Created on Thu Jun 26 13:12:05 2014
 
 @author: schackv

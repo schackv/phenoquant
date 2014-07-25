@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+Various auxilliary functions useful for images.
+
 Created on Thu Jun 26 17:14:25 2014
 
 @author: schackv
@@ -9,10 +11,16 @@ import numpy as np
 import skimage.morphology as morph
 
 def rgb_to_gray(rgb):
+    """Convert an rgb image to a gray scale image using the same weighting as Matlab."""
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.144])
     
 
 def standardize(X,mask=[]):
+    """Standardize a matrix X to zero mean and unit variance. 
+    
+    If mask is supplied, only values with mask==True are used to calculate mean 
+    and variance. All elements of X are standardized, though.
+    """
     if not mask.size:
         mask = np.ones_like(X)==1
     

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 17 20:22:04 2014
+Simulate a phenotype for N individuals, with a given environmental variance,
+number of underlying genes and admixture proportion estimation noise.
+
+Created on Mon Feb 17 20:00:04 2014
 
 @author: schackv
 """

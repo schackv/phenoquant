@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+Demo using phenoquant.discrim.py and phenoquant.kernel.py.
+
 Created on Thu Jun 26 13:12:05 2014
 
 @author: schackv
@@ -7,7 +9,7 @@ Created on Thu Jun 26 13:12:05 2014
 
 import numpy as np
 import matplotlib.pyplot as plt
-import phenoquant.manifolds as manifolds
+import phenoquant.discrim as discrim
 
 def demo_mimicryphenotype():
     """Reduce a collection of extracted phenotypes to derive a mimicry-related
@@ -39,10 +41,10 @@ def demo_mimicryphenotype():
     # Reduce to one dimension
     if manifold=='lda':
          # Linear discriminant analysis    
-        z, w = manifolds.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
+        z, w = discrim.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
     elif manifold =='kda':
         #  Kernel discriminant analysis
-        z, w = manifolds.fisherkda(X,y,kernel='Gaussian',scale=None,alpha=0.5)   # Arbitrary reg. param. choice. scale=None defaults to rule-of-thumb scale choices
+        z, w = discrim.fisherkda(X,y,kernel='Gaussian',scale=None,alpha=0.5)   # Arbitrary reg. param. choice. scale=None defaults to rule-of-thumb scale choices
     
     # Plot variation of phenotype per locality
     unique_locations, phenotypes = groupvalues(z, locations)

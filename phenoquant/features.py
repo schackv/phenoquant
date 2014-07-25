@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Extraction and spatial pooling of zeroth, first and second order 
+information from images. 
+
+Specifically developed for images of colorful frogs, see phenoquant_demo/demo_features.py.
+
 Created on Thu Jun 26 14:51:44 2014
 
 @author: schackv
@@ -71,8 +76,6 @@ def spatial_pooling(images,mask,xy,radii,labels_in=[]):
     return f, labels
             
             
-    
-
 def segment_stripes(imrgb,mask):
     """Segment image into black and colored regions (stripe-or-not)"""
     

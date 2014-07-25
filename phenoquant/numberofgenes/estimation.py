@@ -1,3 +1,13 @@
+"""
+Methods for estimating the maximum likelihood for a given number of genes,
+admixture proportions and quantified phenotypes.
+
+Remember to \cite{}! See license.md.
+
+Created on Mon Feb 17 20:22:04 2014
+
+@author: schackv
+"""
 
 from __future__ import division
 import numpy as np
@@ -7,12 +17,9 @@ from . import simulation as ps
 from scipy.optimize import minimize
 from math import sqrt, pi
 
-#from joblib import Parallel, delayed
-
 class GeneEstimator:
     
     data = [];
-       
     
     def estimate(self,f,z,kmax):
         """Estimate the maximum likelihood for 1:kmax genes given the admixture

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 24 13:06:06 2014
+Functions useful for kernel space decompositions.
 
 These kernel functions are translations of code by:
 
@@ -9,6 +9,8 @@ aa@space.dtu.dk, www.imm.dtu.dk/~aa
 
 Therefore all credit should be directed to him and appropriate papers 
 should be cited when using these for academic publications.
+
+Created on Thu Jul 24 13:06:06 2014
 
 @author: schackv
 
