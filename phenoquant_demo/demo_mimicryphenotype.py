@@ -19,7 +19,7 @@ def demo_mimicryphenotype():
     It does not illustrate how to do parameter selection in a meaningful way.
     """
     
-    manifold = 'kda'    
+    manifold = 'kda'        # Choose 'lda' or 'kda'
     
     # Read data
     raw = np.genfromtxt('phenotypes.csv',delimiter=';',dtype=None)
@@ -36,11 +36,12 @@ def demo_mimicryphenotype():
     y = np.array(is_model1,dtype=int) + 2*np.array(is_model2,dtype=int) # Class vector
     X = (data-data.mean(axis=0))/data.std(axis=0,ddof=1)        # Standardize data column wise
     
+    # Reduce to one dimension
     if manifold=='lda':
-        # Reduce to one dimension using linear discriminant analysis    
+         # Linear discriminant analysis    
         z, w = manifolds.fisherlda(X,y,alpha=0.5)   # Arbitrary reg. param. choice
     elif manifold =='kda':
-        # Reduce to one dimension using kernel discriminant analysis
+        #  Kernel discriminant analysis
         z, w = manifolds.fisherkda(X,y,kernel='Gaussian',scale=None,alpha=0.5)   # Arbitrary reg. param. choice. scale=None defaults to rule-of-thumb scale choices
     
     # Plot variation of phenotype per locality

@@ -15,6 +15,7 @@ should be cited when using these for academic publications.
 """
 
 import numpy as np
+from scipy.spatial.distance import pdist
 
 def center(K,Ktrain=None):
     """Center kernel with training data.
@@ -42,9 +43,20 @@ def center(K,Ktrain=None):
     return Kc
     
     
-def kernelize(Xtrain,Xtest,kernel='Gaussian',scale=None):
+    
+def rule_of_thumb_scale(X):
+    """Estimate the scale as the average distance between observations. 
+    Rows in X are observations and columns are variables."""
+    
+    D = pdist(X)
+    scale = np.mean(D)
+    return scale
+    
+def kernelize(Xtrain,Xtest=None,kernel='Gaussian',scale=None):
     """Kernelize the observations in Xtest using the observations in Xtrain.
+    If Xtest is omitted, Xtrain will be kernelized with itself.
     The i,j element of K will be k(x_i,y_j).
+    
     
     The possible values for kernel are:
         'Gaussian' (Default)    Gaussian kernel
@@ -57,21 +69,27 @@ def kernelize(Xtrain,Xtest,kernel='Gaussian',scale=None):
     Returns numpy.matrix K with shape (Xtrain.shape[0],Xtest.shape[0]).
     """
     Xtrain = np.matrix(Xtrain)
-    Xtest = np.matrix(Xtest)
-    
+
+    # Avoid row-sums for linear kernel
     if kernel == 'linear':
+        if Xtest is None: Xtest = Xtrain.view()
         K = Xtrain * Xtest.T
         return K
-    
-    ntrain = Xtrain.shape[0]
-    ntest = Xtest.shape[0]
-    Xtrainsum = np.sum(np.power(Xtrain,2),axis=1)    # Squared row sums
-    Xtestsum = np.sum(np.power(Xtest,2),axis=1)      # Squared test sums
-    K = - 2*Xtrain*Xtest.T + Xtestsum.T + Xtrainsum
-    
+
     if scale is None:
-        scale = np.nansum(np.sqrt(K[K>0]))/(ntest*(ntrain-1))
+        scale = rule_of_thumb_scale(Xtrain)
+
+    Xtrainsum = np.sum(np.power(Xtrain,2),axis=1)    # Squared row sums
     
+    if Xtest is None:
+        Xtest = Xtrain.view()       # .view() to look at same data as in Xtrain
+        Xtestsum = Xtrainsum.view()
+    else:
+        Xtest = np.matrix(Xtest)
+        Xtestsum = np.sum(np.power(Xtest,2),axis=1)      # Squared test sums
+        
+    K = - 2*Xtrain*Xtest.T + Xtestsum.T + Xtrainsum
+        
     if kernel == 'Gaussian':
         K = np.exp(-K/(2*scale**2))
     elif kernel == 'multiquadric':
@@ -81,7 +99,7 @@ def kernelize(Xtrain,Xtest,kernel='Gaussian',scale=None):
     else:
         raise NameError(kernel)
     
-    return K, scale
+    return K
     
         
     
