@@ -58,6 +58,59 @@ class PhenotypeSimulator:
         self.f = np.array(f);
         
         
+    def simulateTwoPhenotypes(self, same_set, N, sigma_e, sigma_f, mu=[[-1, 0,1]], B=1, seed=None):
+        """Simulate two sets of N phenotype observations with 
+        mu is a three vector of phenotypic means,
+        sigma_e being the st.d. on the environmental variance, 
+        sigma_f the estimation noise on the admixture proportions
+        and B the number of samples of each admixture proportion.
+        same_set = True or False, controlling whether the two phenotypes are
+        due to the same or different sets of genes.
+        
+        sigma_e and mu can either be one or two elements. If one, it is repeated for the second phenotype.
+        """
+               
+        if len(mu)==1:
+            mu = [mu[0],mu[0]]
+
+        if len(sigma_e)==1:
+            sigma_e = [[sigma_e,sigma_e]]
+        
+        self.mu = mu
+        self.sigma_e = sigma_e
+        self.sigma_f = sigma_f
+        self.B = B   
+        self.N = N
+        
+        # Draw a uniform distribution of f
+        self.f_true = np.random.uniform(0,1,N)
+        
+        # Assign genotypes based on probabilities
+        G = [None]*2
+        G[0] = self.assign_genotypes(self.f_true,self.K)
+        if same_set:
+            G[1] = G[0]
+        else:
+            G[1] = self.assign_genotypes(self.f_true,self.K)
+             
+        # Convert to genotype proportions
+        H = [np.column_stack((np.sum(g==0,axis=1),np.sum(g==1,axis=1),np.sum(g==2,axis=1)))/self.K for g in G]
+                
+        # Assign phenotypic values
+        z_true = [np.dot(h,m)[:,np.newaxis] for h, m in zip(H,self.mu)]
+        
+        # print(z_true)
+        self.z = [z + sig * np.random.normal(0,1,size=[N,1]) for z, sig in zip(z_true, sigma_e)]
+        
+        # Add noise
+        f_noise = sigma_f * np.random.normal(0,1,size=[N,B])
+        f = self.f_true[:,np.newaxis] + f_noise  # Broadcast
+        f = np.maximum(np.minimum(f,1),0)
+        
+        self.f = np.array(f)
+        
+        
+        
     @classmethod
     def assign_genotypes(cls,f,K):
         """Randomly assign K-locis genotypes given the admixture proportions f"""
