@@ -16,7 +16,7 @@ Created on Thu Jun 26 13:12:05 2014
 import matplotlib.pyplot as plt
 import numpy as np
 from phenoquant.numberofgenes.simulation import PhenotypeSimulator
-from phenoquant.numberofgenes.estimation import GeneEstimator
+from phenoquant.numberofgenes.oneortwosets import Estimator
 
 def demo_oneortwosets():
     """Demonstrate the estimation of the same or separate sets of genes using simulated data
@@ -24,7 +24,7 @@ def demo_oneortwosets():
     """
     
     # Phenotype and admixture proportion simulation
-    IS_SAME = True   # True hypothesis 
+    IS_SAME = False   # True hypothesis 
     K = 2
     PS = PhenotypeSimulator(K)
     PS.simulateTwoPhenotypes(N=1000,same_set=IS_SAME,sigma_e=(0.2, 0.05),sigma_f=0)
@@ -34,11 +34,14 @@ def demo_oneortwosets():
     plt.plot(PS.f,np.hstack(PS.z),'x')
     plt.xlabel('Admixture proportion f')
     plt.ylabel('Phenotypic quantity z')
-    plt.show(block=True)
+    plt.show(block=False)
     
+    E = Estimator(PS.f,PS.z[0],PS.z[1],K=2)
+    maxll1, maxll2, params1, params2 = E.maximize_likelihood()
     
+    print('Log-likelihood of same set: {:.3f}'.format(maxll1))
+    print('Log-likelihood of two sets: {:.3f}'.format(maxll2))
     
-    plt.show()
         
 def square_plot(ax):
     """Make a plot square"""
